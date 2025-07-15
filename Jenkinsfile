@@ -1,30 +1,53 @@
 pipeline {
     agent any
     environment {
-        variable = "https://youtube.com"
+        youtubePath = 'https://youtube.com'
+        httpBinUrl = 'https://httpbin.org'
     }
     stages {
-        stage("etape 1") {
+        stage('etape 1') {
             steps {
-                echo "Bonjour monde !"
+                echo 'Bonjour monde !'
                 script {
                     def x = 1
                     echo "${x}"
                 }
             }
         }
-        stage("etape 2") {
-            steps {
-                echo "${variable} lien vers youtube"
+        stage('etape 2') {
+            parallel {
+                stage('etape 2.1') {
+                    steps {
+                        echo "${httpBinUrl} lien vers httpbin"
+                    }
+                }
+                stage('etape 2.2') {
+                    steps {
+                        echo "${youtubePath} lien vers youtube"
+                    }
+                }
             }
         }
-        stage("etape 3") {
-            steps {
-                script {
-                    try {
-                        def response = httpRequest 'https://httpbin.org/get'
-                    } catch (Exception e) {
-                        error "Erreur : ${e.message}"
+        stage('etape 3') {
+            parallel {
+                stage('etape 3.1') {
+                    steps {
+                        script {
+                            try {
+                                def response = httpRequest '${youtubePath}'
+                            } catch (Exception e) {
+                                error "Erreur : ${e.message}"
+                            }
+                        }
+                    }
+                }
+                stage('etape 3.2') {
+                    script {
+                        try {
+                            def response = httpRequest '${httpBinUrl}/get'
+                        } catch (Exception e) {
+                            error "Erreur : ${e.message}"
+                        }
                     }
                 }
             }
@@ -32,10 +55,10 @@ pipeline {
     }
     post {
         success {
-            echo "Le script s'est bien exécuter"
+            echo "Le script s'est bien exécuté"
         }
         failure {
-            echo "Le scrip ne s'est pas bien exécuter"
+            echo "Le scrip ne s'est pas bien exécuté"
         }
         always {
             echo "Fin d'exécution"
