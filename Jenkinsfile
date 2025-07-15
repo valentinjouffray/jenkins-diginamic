@@ -42,11 +42,13 @@ pipeline {
                     }
                 }
                 stage('etape 3.2') {
-                    script {
-                        try {
-                            def response = httpRequest '${httpBinUrl}/get'
-                        } catch (Exception e) {
-                            error "Erreur : ${e.message}"
+                    steps {
+                        script {
+                            try {
+                                def response = httpRequest '${httpBinUrl}/get'
+                            } catch (Exception e) {
+                                error "Erreur : ${e.message}"
+                            }
                         }
                     }
                 }
