@@ -34,7 +34,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                def response = httpRequest '${youtubePath}'
+                                def response = httpRequest "${youtubePath}"
                             } catch (Exception e) {
                                 error "Erreur : ${e.message}"
                             }
@@ -45,7 +45,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                def response = httpRequest '${httpBinUrl}/get'
+                                def response = httpRequest "${httpBinUrl}/get"
                             } catch (Exception e) {
                                 error "Erreur : ${e.message}"
                             }
